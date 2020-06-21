@@ -1,9 +1,13 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 #include <time.h>
 
 #define M 3
 #define N M*M
+
+bool DISPLAY_OUTPUT = false;
 
 int number_of_assignments = 0;
 
@@ -59,17 +63,6 @@ void update_valid_values(int board[N][N], int x, int y) {
 		for (int j = (y/M)*M; j < (y/M)*M+M; j++) {
 			for (int i = (x/M)*M; i < (x/M)*M+M; i++) {
 				if (i != x && j != y) valid_values[i][j][board[x][y]-1] = false;
-			}
-		}
-	}
-}
-
-// copies a NxNxN boolean array from source into destination
-void copy(bool source[N][N][N], bool destination[N][N][N]) {
-	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < N; j++) {
-			for (int k = 0; k < N; k++) {
-				destination[i][j][k] = source[i][j][k];
 			}
 		}
 	}
@@ -151,17 +144,21 @@ bool solve_board(int board[N][N]) {
 	while (best_value(board, x, y, &value)) {
 		board[x][y] = value+1;
 		number_of_assignments++;
-		printf("Assigned %d to (%d, %d):\n", value+1, x+1, y+1);
-		print_board(board);
+		if (DISPLAY_OUTPUT) {
+			printf("Assigned %d to (%d, %d):\n", value+1, x+1, y+1);
+			print_board(board);
+		}
 		// save valid values in case of failure
 		bool backup[N][N][N];
-		copy(valid_values, backup);
+		memcpy(backup, valid_values, sizeof(backup));
 		update_valid_values(board, x, y);
 		if (solve_board(board)) { // success!
 			return true;
 		} else { // fail :(
-			printf("Backtracking...\n");
-			copy(backup, valid_values);
+			if (DISPLAY_OUTPUT) {
+				printf("Backtracking...\n");
+			}
+			memcpy(valid_values, backup, sizeof(backup));
 			valid_values[x][y][value] = false; // remove value from valid values
 			board[x][y] = 0;
 		} // try again
@@ -169,7 +166,15 @@ bool solve_board(int board[N][N]) {
 	return false;
 }
 
-int main(void) {
+int main(int argc, char **argv) {
+	if (argv[argc - 1][0] == '-') {
+		if (argv[argc - 1][1] == 'o' && argv[argc - 1][2] == '\0') {
+			DISPLAY_OUTPUT = true;
+		} else {
+			printf("Invalid option: %s\n", argv[1]);
+			return EXIT_FAILURE;
+		}
+	}
 	clock_t begin = clock();
 	int board[N][N];
 	read_board(board);
@@ -181,9 +186,14 @@ int main(void) {
 		}
 	}
 	if (solve_board(board)) {
-		printf("Success!\n\nNumber of trials: %d\n", number_of_assignments);
+		if (DISPLAY_OUTPUT) {
+			printf("Status:\tSuccess!\nTrials:\t%d\n", number_of_assignments);
+		} else {
+			printf("Solution:\n");
+			print_board(board);
+		}
 	} else {
-		printf("No solution exists.\n");
+		printf("Status:\tNo solution.\n");
 	}
-	printf("Time: %f seconds\n", (double)(clock()-begin)/CLOCKS_PER_SEC);
+	printf("Time:\t%f seconds\n", (double)(clock()-begin)/CLOCKS_PER_SEC);
 }
