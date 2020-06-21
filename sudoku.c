@@ -60,8 +60,8 @@ void update_valid_values(int board[N][N], int x, int y) {
 			if (i != x) valid_values[i][y][board[x][y]-1] = false;
 			if (i != y) valid_values[x][i][board[x][y]-1] = false;
 		}
-		for (int j = (y/M)*M; j < (y/M)*M+M; j++) {
-			for (int i = (x/M)*M; i < (x/M)*M+M; i++) {
+		for (int j = (y / M) * M; j < (y / M) * M + M; j++) {
+			for (int i = (x / M) * M; i < (x / M) * M + M; i++) {
 				if (i != x && j != y) valid_values[i][j][board[x][y]-1] = false;
 			}
 		}
@@ -75,8 +75,8 @@ int degree(int board[N][N], int x, int y) {
 		if (i != y && !board[x][i]) count++;
 		else if (i != x && !board[i][y]) count++;
 	}
-	for (int j = (y/M)*M; j < (y/M)*M+M; j++) {
-		for (int i = (x/M)*M; i < (x/M)*M+M; i++) {
+	for (int j = (y / M) * M; j < (y / M) * M + M; j++) {
+		for (int i = (x / M) * M; i < (x / M) * M + M; i++) {
 			if (i != x && j != y && !board[i][j]) count++;
 		}
 	}
@@ -110,7 +110,7 @@ bool find_best_empty_cell(int board[N][N], int *x, int *y) {
 
 // finds the value for (x, y) that rules out the fewest values for the neighbouring unassigned variables
 bool best_value(int board[N][N], int x, int y, int *ans) { // least constraining value heuristic
-	int max_count = (N-1+N-1+N-1)*N;
+	int max_count = (N - 1 + N - 1 + N - 1) * N;
 	bool retval = false;
 	for (int value = 0; value < N; value++) {
 		if (valid_values[x][y][value]) {
@@ -120,8 +120,8 @@ bool best_value(int board[N][N], int x, int y, int *ans) { // least constraining
 					if (i != x && j != y && !board[i][j] && valid_values[i][j][value]) count++;
 				}
 			}
-			for (int j = (y/M)*M; j < (y/M)*M+M; j++) {
-				for (int i = (x/M)*M; i < (x/M)*M+M; i++) {
+			for (int j = (y / M) * M; j < (y / M) * M + M; j++) {
+				for (int i = (x / M) * M; i < (x / M) * M + M; i++) {
 					if (i != x && j != y && !board[i][j] && valid_values[i][j][value]) count++;
 				}
 			}
@@ -142,10 +142,10 @@ bool solve_board(int board[N][N]) {
 		return true;
 	}
 	while (best_value(board, x, y, &value)) {
-		board[x][y] = value+1;
+		board[x][y] = value + 1;
 		number_of_assignments++;
 		if (DISPLAY_OUTPUT) {
-			printf("Assigned %d to (%d, %d):\n", value+1, x+1, y+1);
+			printf("Assigned %d to (%d, %d):\n", value + 1, x + 1, y + 1);
 			print_board(board);
 		}
 		// save valid values in case of failure
