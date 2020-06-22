@@ -194,7 +194,7 @@ int main(int argc, char **argv) {
 			print_board(board);
 		}
 	} else {
-		printf("Status:\tNo solution.\n");
+		printf("Status:\tNo solution\n");
 	}
-	printf("Time:\t%f seconds\n", (double)(clock()-begin)/CLOCKS_PER_SEC);
+	printf("Time:\t%f seconds\n", (double)(clock() - begin) / CLOCKS_PER_SEC);
 }
