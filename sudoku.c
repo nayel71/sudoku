@@ -5,7 +5,7 @@
 #include <time.h>
 
 #define M 3
-#define N M*M
+#define N (M * M)
 
 bool DISPLAY_OUTPUT = false;
 
@@ -110,7 +110,7 @@ bool find_best_empty_cell(int board[N][N], int *x, int *y) {
 
 // finds the value for (x, y) that rules out the fewest values for the neighbouring unassigned variables
 bool best_value(int board[N][N], int x, int y, int *ans) { // least constraining value heuristic
-	int max_count = (N - 1 + N - 1 + N - 1) * N;
+	int max_count = N * N;//(N - 1 + N - 1 + N - 1) * N;
 	bool retval = false;
 	for (int value = 0; value < N; value++) {
 		if (valid_values[x][y][value]) {
@@ -169,7 +169,7 @@ bool solve(int board[N][N]) {
 int main(int argc, char **argv) {
 	if (argc == 2 && argv[1][0] == '-' && argv[1][1] == 'o' && argv[1][2] == '\0') {
 		DISPLAY_OUTPUT = true;
-	} else {
+	} else if (argc > 1) {
 		fprintf(stderr, "Invalid option: %s\nUsage: %s [-o] < sudoku.txt\n", argv[1], argv[0]);
 		return EXIT_FAILURE;
 	}
