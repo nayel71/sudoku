@@ -3016,4 +3016,4 @@ Assigned 5 to (6, 9):
  1 9 5 7 3 8 6 2 4
 Status:	Success!
 Trials:	278
-Time:	0.004967 seconds
+Time:	0.005214 seconds

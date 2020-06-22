@@ -7,11 +7,7 @@
 #define M 3
 #define N (M * M)
 
-bool DISPLAY_OUTPUT = false;
-
-// valid_values[x][y][z] indicates if z is a valid value for square (x, y) on the board
-
-// reads a NxN board
+// reads a NxN board from stdin
 void read(int board[N][N]) {
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < N; j++) {
@@ -31,6 +27,7 @@ void print(int board[N][N]) {
 }
 
 // initialises the array of valid values
+// valid_values[x][y][z] indicates if z is a valid value for square (x, y) on the board
 void initialise(bool valid_values[N][N][N]) {
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < N; j++) {
@@ -106,7 +103,8 @@ bool find_best_empty_cell(int board[N][N], bool valid_values[N][N][N], int *x, i
 }
 
 // finds the value for (x, y) that rules out the fewest values for the neighbouring unassigned variables
-bool best_value(int board[N][N], bool valid_values[N][N][N], int x, int y, int *ans) { // least constraining value heuristic
+// using the least constraining value heuristic
+bool best_value(int board[N][N], bool valid_values[N][N][N], int x, int y, int *ans) {
 	int max_count = N * N;
 	bool retval = false;
 	for (int value = 0; value < N; value++) {
@@ -132,8 +130,8 @@ bool best_value(int board[N][N], bool valid_values[N][N][N], int x, int y, int *
 	return retval;
 }
 
-// solves the board
-bool solve(int board[N][N], bool valid_values[N][N][N], int *trials) {
+// solves the board using the valid values, records the number of trials
+bool solve(int board[N][N], bool valid_values[N][N][N], int *trials, bool display_flag) {
 	int x, y, value;
 	if (!find_best_empty_cell(board, valid_values, &x, &y)) {
 		return true;
@@ -141,7 +139,7 @@ bool solve(int board[N][N], bool valid_values[N][N][N], int *trials) {
 	while (best_value(board, valid_values, x, y, &value)) {
 		board[x][y] = value + 1;
 		(*trials)++;
-		if (DISPLAY_OUTPUT) {
+		if (display_flag) {
 			printf("Assigned %d to (%d, %d):\n", value + 1, x + 1, y + 1);
 			print(board);
 		}
@@ -149,10 +147,10 @@ bool solve(int board[N][N], bool valid_values[N][N][N], int *trials) {
 		bool backup[N][N][N];
 		memcpy(backup, valid_values, sizeof(backup));
 		update(valid_values, board, x, y);
-		if (solve(board, valid_values, trials)) { // success!
+		if (solve(board, valid_values, trials, display_flag)) { // success!
 			return true;
 		} else { // fail :(
-			if (DISPLAY_OUTPUT) {
+			if (display_flag) {
 				printf("Backtracking...\n");
 			}
 			memcpy(valid_values, backup, sizeof(backup));
@@ -164,8 +162,9 @@ bool solve(int board[N][N], bool valid_values[N][N][N], int *trials) {
 }
 
 int main(int argc, char **argv) {
+	bool display_output = false;
 	if (argc == 2 && argv[1][0] == '-' && argv[1][1] == 'o' && argv[1][2] == '\0') {
-		DISPLAY_OUTPUT = true;
+		display_output = true;
 	} else if (argc > 1) {
 		fprintf(stderr, "Usage: %s [-o] < sudoku.txt\n", argv[0]);
 		return EXIT_FAILURE;
@@ -182,8 +181,8 @@ int main(int argc, char **argv) {
 			update(valid_values, board, x, y);
 		}
 	}
-	if (solve(board, valid_values, &trials)) {
-		if (DISPLAY_OUTPUT) {
+	if (solve(board, valid_values, &trials, display_output)) {
+		if (display_output) {
 			printf("Status:\tSuccess!\nTrials:\t%d\n", trials);
 		} else {
 			printf("Solution:\n");
