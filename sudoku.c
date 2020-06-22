@@ -27,7 +27,7 @@ void print(int board[N][N]) {
 }
 
 // initialises the array of valid values
-// valid_values[x][y][z] indicates if z is a valid value for square (x, y) on the board
+// valid_values[x][y][z] indicates if z + 1 is a valid value for square (x, y) on the board
 void initialise(bool valid_values[N][N][N]) {
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < N; j++) {
@@ -130,8 +130,8 @@ bool best_value(int board[N][N], bool valid_values[N][N][N], int x, int y, int *
 	return retval;
 }
 
-// solves the board using the valid values, records the number of trials
-bool solve(int board[N][N], bool valid_values[N][N][N], int *trials, bool display_flag) {
+// solves the board, records the number of trials
+bool solve(int board[N][N], bool valid_values[N][N][N], int *trials, bool display_output) {
 	int x, y, value;
 	if (!find_best_empty_cell(board, valid_values, &x, &y)) {
 		return true;
@@ -139,7 +139,7 @@ bool solve(int board[N][N], bool valid_values[N][N][N], int *trials, bool displa
 	while (best_value(board, valid_values, x, y, &value)) {
 		board[x][y] = value + 1;
 		(*trials)++;
-		if (display_flag) {
+		if (display_output) {
 			printf("Assigned %d to (%d, %d):\n", value + 1, x + 1, y + 1);
 			print(board);
 		}
@@ -147,10 +147,10 @@ bool solve(int board[N][N], bool valid_values[N][N][N], int *trials, bool displa
 		bool backup[N][N][N];
 		memcpy(backup, valid_values, sizeof(backup));
 		update(valid_values, board, x, y);
-		if (solve(board, valid_values, trials, display_flag)) { // success!
+		if (solve(board, valid_values, trials, display_output)) { // success!
 			return true;
 		} else { // fail :(
-			if (display_flag) {
+			if (display_output) {
 				printf("Backtracking...\n");
 			}
 			memcpy(valid_values, backup, sizeof(backup));
