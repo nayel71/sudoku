@@ -11,11 +11,11 @@ bool DISPLAY_OUTPUT = false;
 
 int number_of_assignments = 0;
 
-// valid_values[x][y][z] indicates if z is a valid value for square (x, y) on the sudoku board
+// valid_values[x][y][z] indicates if z is a valid value for square (x, y) on the board
 bool valid_values[N][N][N];
 
-// reads a NxN sudoku board
-void read_board(int board[N][N]) {
+// reads a NxN board
+void read(int board[N][N]) {
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < N; j++) {
 			scanf("%d", &board[i][j]);
@@ -23,8 +23,8 @@ void read_board(int board[N][N]) {
 	}
 }
 
-// prints a NxN sudoku board
-void print_board(int board[N][N]) {
+// prints a NxN board
+void print(int board[N][N]) {
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < N; j++) {
 			printf("%2d", board[i][j]);
@@ -34,7 +34,7 @@ void print_board(int board[N][N]) {
 }
 
 // initialises the array of valid values
-void initialise_valid_values(int board[N][N]) {
+void initialise_valid_values(void) {
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < N; j++) {
 			for (int k = 0; k < N; k++) {
@@ -57,12 +57,12 @@ int remaining_values(int x, int y) {
 void update_valid_values(int board[N][N], int x, int y) {
 	if (board[x][y]) {
 		for (int i = 0; i < N; i++) {
-			if (i != x) valid_values[i][y][board[x][y]-1] = false;
-			if (i != y) valid_values[x][i][board[x][y]-1] = false;
+			if (i != x) valid_values[i][y][board[x][y] - 1] = false;
+			if (i != y) valid_values[x][i][board[x][y] - 1] = false;
 		}
 		for (int j = (y / M) * M; j < (y / M) * M + M; j++) {
 			for (int i = (x / M) * M; i < (x / M) * M + M; i++) {
-				if (i != x && j != y) valid_values[i][j][board[x][y]-1] = false;
+				if (i != x && j != y) valid_values[i][j][board[x][y] - 1] = false;
 			}
 		}
 	}
@@ -135,8 +135,8 @@ bool best_value(int board[N][N], int x, int y, int *ans) { // least constraining
 	return retval;
 }
 
-// solves the sudoku board
-bool solve_board(int board[N][N]) {
+// solves the board
+bool solve(int board[N][N]) {
 	int x, y, value;
 	if (!find_best_empty_cell(board, &x, &y)) {
 		return true;
@@ -146,13 +146,13 @@ bool solve_board(int board[N][N]) {
 		number_of_assignments++;
 		if (DISPLAY_OUTPUT) {
 			printf("Assigned %d to (%d, %d):\n", value + 1, x + 1, y + 1);
-			print_board(board);
+			print(board);
 		}
 		// save valid values in case of failure
 		bool backup[N][N][N];
 		memcpy(backup, valid_values, sizeof(backup));
 		update_valid_values(board, x, y);
-		if (solve_board(board)) { // success!
+		if (solve(board)) { // success!
 			return true;
 		} else { // fail :(
 			if (DISPLAY_OUTPUT) {
@@ -167,31 +167,28 @@ bool solve_board(int board[N][N]) {
 }
 
 int main(int argc, char **argv) {
-	for (int i = 1; i < argc; i++) {
-		if (argv[i][0] == '-' && argv[i][1] == 'o' && argv[i][2] == '\0') {
-			DISPLAY_OUTPUT = true;
-		} else {
-			fprintf(stderr, "Invalid option: %s\n", argv[i]);
-			fprintf(stderr, "Usage: %s [-o] < sudoku.txt\n", argv[0]);
-			return EXIT_FAILURE;
-		}
+	if (argc == 2 && argv[1][0] == '-' && argv[1][1] == 'o' && argv[1][2] == '\0') {
+		DISPLAY_OUTPUT = true;
+	} else {
+		fprintf(stderr, "Invalid option: %s\nUsage: %s [-o] < sudoku.txt\n", argv[1], argv[0]);
+		return EXIT_FAILURE;
 	}
 	clock_t begin = clock();
 	int board[N][N];
-	read_board(board);
-	print_board(board);
-	initialise_valid_values(board);
+	read(board);
+	print(board);
+	initialise_valid_values();
 	for (int y = 0; y < N; y++) {
 		for (int x = 0; x < N; x++) {
 			update_valid_values(board, x, y);
 		}
 	}
-	if (solve_board(board)) {
+	if (solve(board)) {
 		if (DISPLAY_OUTPUT) {
 			printf("Status:\tSuccess!\nTrials:\t%d\n", number_of_assignments);
 		} else {
 			printf("Solution:\n");
-			print_board(board);
+			print(board);
 		}
 	} else {
 		printf("Status:\tNo solution\n");
