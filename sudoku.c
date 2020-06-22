@@ -167,11 +167,12 @@ bool solve_board(int board[N][N]) {
 }
 
 int main(int argc, char **argv) {
-	if (argv[argc - 1][0] == '-') {
-		if (argv[argc - 1][1] == 'o' && argv[argc - 1][2] == '\0') {
+	for (int i = 1; i < argc; i++) {
+		if (argv[i][0] == '-' && argv[i][1] == 'o' && argv[i][2] == '\0') {
 			DISPLAY_OUTPUT = true;
 		} else {
-			printf("Invalid option: %s\n", argv[1]);
+			fprintf(stderr, "Invalid option: %s\n", argv[i]);
+			fprintf(stderr, "Usage: %s [-o] < sudoku.txt\n", argv[0]);
 			return EXIT_FAILURE;
 		}
 	}
