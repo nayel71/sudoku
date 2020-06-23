@@ -5,6 +5,7 @@ A backtracking Sudoku solver
 ## Installation
 
 - `git clone https://github.com/nayel71/sudoku.git`
+- `cd sudoku`
 - `make`
 
 ## Usage
