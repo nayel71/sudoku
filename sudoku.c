@@ -114,23 +114,23 @@ static int degree(sudoku *s, int x, int y) {
 // finds an empty cell with the fewest valid values, stores its coordinates at x and y
 static bool find_best_empty_cell(sudoku *s, int *x, int *y) {
 	int min = N;
+	bool found = false;
 	*x = -1;
 	*y = -1;
-	bool found = false;
 	for (int j = 0; j < N; j++) {
 		for (int i = 0; i < N; i++) {
 			if (!s->board[i][j]) {
-				int cur = remaining_values(s, i, j);
-				if (cur < min) { // MRV heuristic
-					min = cur;
+				int count = remaining_values(s, i, j);
+				if (count < min) { // MRV heuristic
+					min = count;
+					found = true;
 					*x = i;
 					*y = j;
-					found = true;
-				} else if (cur == min) { // break tie
+				} else if (count == min) { // break tie
 					if (degree(s, i, j) < degree(s, *x, *y)) { // degree heuristic
+						found = true;
 						*x = i;
 						*y = j;
-						found = true;
 					}
 				}
 			}
@@ -147,11 +147,11 @@ static bool find_best_value(sudoku *s, int x, int y, int *ans) {
 	for (int value = 0; value < N; value++) {
 		if (s->valid_values[x][y][value]) {
 			int count = 0;
-			for (int j = 0; j < N; j++) {
-				for (int i = 0; i < N; i++) {
-					if (i != x && j != y && !s->board[i][j] && s->valid_values[i][j][value]) {
-						count++;
-					}
+			for (int i = 0; i < N; i++) {
+				if (i != y && !s->board[x][i] && s->valid_values[x][i][value]) {
+					count++;
+				} else if (i != x && !s->board[i][y] && s->valid_values[i][y][value]) {
+					count++;
 				}
 			}
 			for (int j = (y / M) * M; j < (y / M) * M + M; j++) {
@@ -163,8 +163,8 @@ static bool find_best_value(sudoku *s, int x, int y, int *ans) {
 			}
 			if (count < min) {
 				min = count;
-				*ans = value;
 				found = true;
+				*ans = value;
 			}
 		}
 	}

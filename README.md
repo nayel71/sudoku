@@ -34,8 +34,8 @@ Solution:
  5 6 4 1 2 7 3 8 9
  3 1 2 5 9 8 7 6 4
 Status:	Success
-Trials:	7724
-Time:	0.042909 seconds
+Trials:	6615
+Time:	0.034864 seconds
 ```
 Similarly,
 
