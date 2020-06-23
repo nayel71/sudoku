@@ -7,7 +7,8 @@ int main(int argc, char **argv) {
 	clock_t begin = clock();
 	sudoku *s = sudoku_new();
 	if (!sudoku_init(s, argc, argv)) {
-		fprintf(stderr, "Usage: %s [-o] < sudoku.txt\n", argv[0]);
+		fprintf(stderr, "Usage: %s [-o] < puzzle.txt\n", argv[0]);
+		sudoku_destroy(s);
 		return EXIT_FAILURE;
 	}
 	sudoku_print(s);
