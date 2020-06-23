@@ -39,7 +39,7 @@ Time:	0.055963 seconds
 Similarly,
 
 ```
-$ ./solver -o < d.txt > ds.txt`
+$ ./solver -o < d.txt > ds.txt
 ```
 will write verbose output of the backtracking process to the file `ds.txt`.
 

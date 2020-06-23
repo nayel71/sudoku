@@ -15,11 +15,10 @@ int main(int argc, char **argv) {
 		puts("Solution:");
 		sudoku_print(s);
 		puts("Status:\tSuccess");
-		sudoku_print_stats(s);
 	} else {
 		puts("Status:\tNo solution");
-		sudoku_print_stats(s);
 	}
+	sudoku_print_stats(s);
 	sudoku_destroy(s);
 	printf("Time:\t%f seconds\n", (double)(clock() - begin) / CLOCKS_PER_SEC);
 }
