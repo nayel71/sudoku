@@ -9,14 +9,39 @@ A backtracking Sudoku solver
 
 ## Usage
 
-Write the Sudoku in a text file (see `sudoku.txt` for an example) and redirect it into the executable, e.g.
+Write the Sudoku in a text file (see `d.txt` for the example with diagonal symmetry from Wikipedia) and redirect it into the executable, e.g.
 
-- `./sudoku < sudoku.txt`
-- `./sudoku < sudoku.txt > solution.txt`
-- `./sudoku -o < sudoku.txt`
-- `./sudoku -o < sudoku.txt > solution.txt`
+```
+$ ./solver < d.txt
+ 0 0 0 2 1 0 0 0 0
+ 0 0 7 3 0 0 0 0 0
+ 0 5 8 0 0 0 0 0 0
+ 4 3 0 0 0 0 0 0 0
+ 2 0 0 0 0 0 0 0 8
+ 0 0 0 0 0 0 0 7 6
+ 0 0 0 0 0 0 2 5 0
+ 0 0 0 0 0 7 3 0 0
+ 0 0 0 0 9 8 0 0 0
+Solution:
+ 6 4 3 2 1 5 8 9 7
+ 1 2 7 3 8 9 6 4 5
+ 9 5 8 7 6 4 1 2 3
+ 4 3 5 8 7 6 9 1 2
+ 2 7 6 9 5 1 4 3 8
+ 8 9 1 4 3 2 5 7 6
+ 7 8 9 6 4 3 2 5 1
+ 5 6 4 1 2 7 3 8 9
+ 3 1 2 5 9 8 7 6 4
+Status:	Success
+Trials:	7724
+Time:	0.055963 seconds
+```
+Similarly,
 
-(Use the flag `-o` to display verbose output of the backtracking process.)
+```
+$ ./solver -o < d.txt > ds.txt`
+```
+will write verbose output of the backtracking process to the file `ds.txt`.
 
 ## Notes
 
