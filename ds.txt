@@ -84920,4 +84920,4 @@ Solution:
  3 1 2 5 9 8 7 6 4
 Status:	Success
 Trials:	7724
-Time:	0.166210 seconds
+Time:	0.146785 seconds

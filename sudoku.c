@@ -91,6 +91,7 @@ static int remaining_values(sudoku *s, int x, int y) {
 }
 
 // returns the number of unassigned variables on the board constrained with (x, y)
+// (i.e. its degree in the dependency graph)
 static int degree(sudoku *s, int x, int y) {
 	int count = 0;
 	for (int i = 0; i < N; i++) {
@@ -118,16 +119,19 @@ static bool find_best_empty_cell(sudoku *s, int *x, int *y) {
 	bool empty_found = false;
 	for (int j = 0; j < N; j++) {
 		for (int i = 0; i < N; i++) {
-			if (!s->board[i][j] && remaining_values(s, i, j) < current_min) { // MRV heuristic
-				current_min = remaining_values(s, i, j);
-				*x = i;
-				*y = j;
-				empty_found = true;
-			} else if (!s->board[i][j] && remaining_values(s, i, j) == current_min) { // break tie
-				if (degree(s, i, j) < degree(s, *x, *y)) { // degree heuristic
+			if (!s->board[i][j]) {
+				int rv = remaining_values(s, i, j);
+				if (rv < current_min) { // MRV heuristic
+					current_min = rv;
 					*x = i;
 					*y = j;
 					empty_found = true;
+				} else if (rv == current_min) { // break tie
+					if (degree(s, i, j) < degree(s, *x, *y)) { // degree heuristic
+						*x = i;
+						*y = j;
+						empty_found = true;
+					}
 				}
 			}
 		}

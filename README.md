@@ -9,7 +9,7 @@ A backtracking Sudoku solver
 
 ## Usage
 
-Write the Sudoku in a text file (see `d.txt` for the example with diagonal symmetry from Wikipedia) and redirect it into the executable, e.g.
+Write the Sudoku in a text file (see `d.txt` for the example with diagonal symmetry from [Wikipedia](https://en.wikipedia.org/wiki/Sudoku#Mathematics_of_Sudoku) and redirect it into the executable, e.g.
 
 ```
 $ ./solver < d.txt
@@ -34,7 +34,7 @@ Solution:
  3 1 2 5 9 8 7 6 4
 Status:	Success
 Trials:	7724
-Time:	0.055963 seconds
+Time:	0.042909 seconds
 ```
 Similarly,
 
