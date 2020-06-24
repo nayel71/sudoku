@@ -35,7 +35,7 @@ Solution:
  3 1 2 5 9 8 7 6 4
 Status:	Success
 Trials:	6615
-Time:	0.034864 seconds
+Time:	0.032730 seconds
 ```
 Similarly,
 

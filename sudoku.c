@@ -90,20 +90,20 @@ static int remaining_values(sudoku *s, int x, int y) {
 	return count;
 }
 
-// returns the number of unassigned variables on the board constrained with (x, y)
-// (i.e. its degree in the dependency graph)
-static int degree(sudoku *s, int x, int y) {
+// if ignore_value, returns the number of unassigned variables on the board constrained with (x, y)
+// otherwise, returns the number of such variables for which value is valid
+static int degree(sudoku *s, int x, int y, bool ignore_value, int value) {
 	int count = 0;
 	for (int i = 0; i < N; i++) {
-		if (i != y && !s->board[x][i]) {
+		if (i != y && !s->board[x][i] && (ignore_value || s->valid_values[x][i][value])) {
 			count++;
-		} else if (i != x && !s->board[i][y]) {
+		} else if (i != x && !s->board[i][y] && (ignore_value || s->valid_values[i][y][value])) {
 			count++;
 		}
 	}
 	for (int j = (y / M) * M; j < (y / M) * M + M; j++) {
 		for (int i = (x / M) * M; i < (x / M) * M + M; i++) {
-			if (i != x && j != y && !s->board[i][j]) {
+			if (i != x && j != y && !s->board[i][j] && (ignore_value || s->valid_values[i][y][value])) {
 				count++;
 			}
 		}
@@ -111,12 +111,10 @@ static int degree(sudoku *s, int x, int y) {
 	return count;
 }
 
-// finds an empty cell with the fewest valid values, stores its coordinates at x and y
+// tries to find an empty cell with the fewest valid values, stores its coordinates at x and y
 static bool find_best_empty_cell(sudoku *s, int *x, int *y) {
 	int min = N;
 	bool found = false;
-	*x = -1;
-	*y = -1;
 	for (int j = 0; j < N; j++) {
 		for (int i = 0; i < N; i++) {
 			if (!s->board[i][j]) {
@@ -127,7 +125,7 @@ static bool find_best_empty_cell(sudoku *s, int *x, int *y) {
 					*x = i;
 					*y = j;
 				} else if (count == min) { // break tie
-					if (degree(s, i, j) < degree(s, *x, *y)) { // degree heuristic
+					if (degree(s, i, j, true, 0) < degree(s, *x, *y, true, 0)) { // degree heuristic
 						found = true;
 						*x = i;
 						*y = j;
@@ -139,28 +137,14 @@ static bool find_best_empty_cell(sudoku *s, int *x, int *y) {
 	return found;
 }
 
-// finds the value for (x, y) that rules out the fewest values for the neighbouring unassigned variables
-// using the least constraining value heuristic (neighbouring in the sense of the dependency graph)
+// tries to find the value for (x, y) that rules out the fewest values for the neighbouring unassigned variables
+// (neighbouring in the sense of the dependency graph) -- least constraining value heuristic
 static bool find_best_value(sudoku *s, int x, int y, int *ans) {
 	int min = N * N;
 	bool found = false;
 	for (int value = 0; value < N; value++) {
 		if (s->valid_values[x][y][value]) {
-			int count = 0;
-			for (int i = 0; i < N; i++) {
-				if (i != y && !s->board[x][i] && s->valid_values[x][i][value]) {
-					count++;
-				} else if (i != x && !s->board[i][y] && s->valid_values[i][y][value]) {
-					count++;
-				}
-			}
-			for (int j = (y / M) * M; j < (y / M) * M + M; j++) {
-				for (int i = (x / M) * M; i < (x / M) * M + M; i++) {
-					if (i != x && j != y && !s->board[i][j] && s->valid_values[i][j][value]) {
-						count++;
-					}
-				}
-			}
+			int count = degree(s, x, y, false, value);
 			if (count < min) {
 				min = count;
 				found = true;
