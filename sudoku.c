@@ -42,8 +42,8 @@ bool sudoku_init(sudoku *s, int argc, char **argv) {
 			}
 		}
 	}
-	for (int y = 0; y < N; y++) {
-		for (int x = 0; x < N; x++) {
+	for (int x = 0; x < N; x++) {
+		for (int y = 0; y < N; y++) {
 			sudoku_update(s, x, y);
 		}
 	}
