@@ -34,8 +34,8 @@ Solution:
  5 6 4 1 2 7 3 8 9
  3 1 2 5 9 8 7 6 4
 Status:	Success
-Trials:	6615
-Time:	0.032730 seconds
+Trials:	4807
+Time:	0.022228 seconds
 ```
 Similarly,
 
@@ -46,5 +46,5 @@ will write verbose output of the backtracking process to the file `ds.txt`.
 
 ## Notes
 
-- The program does not check if the Sudoku is valid.
+- The program does not check if the initial board is valid. (Although it does detect if there are no solutions to a valid initial board.)
 - If there are multiple solutions, the program will find only one.

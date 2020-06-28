@@ -69,8 +69,8 @@ void sudoku_update(sudoku *s, int x, int y) {
 				s->valid_values[x][i][s->board[x][y] - 1] = false;
 			}
 		}
-		for (int j = (y / M) * M; j < (y / M) * M + M; j++) {
-			for (int i = (x / M) * M; i < (x / M) * M + M; i++) {
+		for (int i = (x / M) * M; i < (x / M) * M + M; i++) {
+			for (int j = (y / M) * M; j < (y / M) * M + M; j++) {
 				if (i != x && j != y) {
 					s->valid_values[i][j][s->board[x][y] - 1] = false;
 				}
@@ -101,8 +101,8 @@ static int degree(sudoku *s, int x, int y, bool ignore_value, int value) {
 			count++;
 		}
 	}
-	for (int j = (y / M) * M; j < (y / M) * M + M; j++) {
-		for (int i = (x / M) * M; i < (x / M) * M + M; i++) {
+	for (int i = (x / M) * M; i < (x / M) * M + M; i++) {
+		for (int j = (y / M) * M; j < (y / M) * M + M; j++) {
 			if (i != x && j != y && !s->board[i][j] && (ignore_value || s->valid_values[i][y][value])) {
 				count++;
 			}
@@ -111,12 +111,12 @@ static int degree(sudoku *s, int x, int y, bool ignore_value, int value) {
 	return count;
 }
 
-// tries to find an empty cell with the fewest valid values, stores its coordinates at x and y
+// tries to find an empty cell with the fewest valid values; if successful, updates *x and *y with its coordinates
 static bool find_best_empty_cell(sudoku *s, int *x, int *y) {
 	int min = N;
 	bool found = false;
-	for (int j = 0; j < N; j++) {
-		for (int i = 0; i < N; i++) {
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
 			if (!s->board[i][j]) {
 				int count = remaining_values(s, i, j);
 				if (count < min) { // MRV heuristic
