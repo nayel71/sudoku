@@ -44,7 +44,9 @@ bool sudoku_init(sudoku *s, int argc, char **argv) {
 	}
 	for (int x = 0; x < N; x++) {
 		for (int y = 0; y < N; y++) {
-			sudoku_update(s, x, y);
+			if (s->board[x][y]) {
+				sudoku_update(s, x, y);
+			}
 		}
 	}
 	return true;
@@ -60,20 +62,18 @@ void sudoku_print(sudoku *s) {
 }
 
 void sudoku_update(sudoku *s, int x, int y) {
-	if (s->board[x][y]) {
-		for (int i = 0; i < N; i++) {
-			if (i != x) {
-				s->valid_values[i][y][s->board[x][y] - 1] = false;
-			}
-			if (i != y) {
-				s->valid_values[x][i][s->board[x][y] - 1] = false;
-			}
+	for (int i = 0; i < N; i++) {
+		if (i != x) {
+			s->valid_values[i][y][s->board[x][y] - 1] = false;
 		}
-		for (int i = (x / M) * M; i < (x / M) * M + M; i++) {
-			for (int j = (y / M) * M; j < (y / M) * M + M; j++) {
-				if (i != x && j != y) {
-					s->valid_values[i][j][s->board[x][y] - 1] = false;
-				}
+		if (i != y) {
+			s->valid_values[x][i][s->board[x][y] - 1] = false;
+		}
+	}
+	for (int i = (x / M) * M; i < (x / M) * M + M; i++) {
+		for (int j = (y / M) * M; j < (y / M) * M + M; j++) {
+			if (i != x && j != y) {
+				s->valid_values[i][j][s->board[x][y] - 1] = false;
 			}
 		}
 	}
