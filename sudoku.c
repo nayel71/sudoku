@@ -11,6 +11,7 @@ struct sudoku {
 	bool valid_values[N][N][N]; // valid_values[x][y][z] indicates if z + 1 is a valid value for square (x, y)
 	int trials;
 	bool display_output;
+	int backtrack;
 };
 
 sudoku *sudoku_new(void) {
@@ -29,6 +30,7 @@ void sudoku_print_stats(sudoku *s) {
 bool sudoku_init(sudoku *s, int argc, char **argv) {
 	s->trials = 0;
 	s->display_output = false;
+	s->backtrack = 0;
 	if (argc == 2 && argv[1][0] == '-' && argv[1][1] == 'o' && argv[1][2] == '\0') {
 		s->display_output = true;
 	} else if (argc > 1) {
@@ -164,6 +166,10 @@ bool sudoku_solve(sudoku *s) {
 		s->board[x][y] = value + 1;
 		s->trials++;
 		if (s->display_output) {
+			if (s->backtrack) {
+				printf("Backtracking %d steps...\n", s->backtrack);
+				s->backtrack = 0;
+			}
 			printf("Assigned %d to (%d, %d):\n", value + 1, x + 1, y + 1);
 			sudoku_print(s);
 		}
@@ -174,9 +180,7 @@ bool sudoku_solve(sudoku *s) {
 		if (sudoku_solve(s)) { // success!
 			return true;
 		} else { // fail :(
-			if (s->display_output) {
-				printf("Backtracking...\n");
-			}
+			s->backtrack++;
 			memcpy(s->valid_values, backup, sizeof(backup));
 			s->valid_values[x][y][value] = false; // remove value from valid values
 			s->board[x][y] = 0;
