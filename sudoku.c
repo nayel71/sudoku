@@ -105,7 +105,7 @@ static int degree(sudoku *s, int x, int y, bool ignore_value, int value) {
 	}
 	for (int i = (x / M) * M; i < (x / M) * M + M; i++) {
 		for (int j = (y / M) * M; j < (y / M) * M + M; j++) {
-			if (i != x && j != y && !s->board[i][j] && (ignore_value || s->valid_values[i][y][value])) {
+			if (i != x && j != y && !s->board[i][j] && (ignore_value || s->valid_values[i][j][value])) {
 				count++;
 			}
 		}
